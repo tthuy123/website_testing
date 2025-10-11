@@ -1,0 +1,8 @@
+{
+  "name": "k6-browser-pom",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "k6/browser POM skeleton",
+  "dependencies": {},
+  "devDependencies": {}
+}
