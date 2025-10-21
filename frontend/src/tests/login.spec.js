@@ -1,49 +1,24 @@
-import { browser } from 'k6/browser';
-import { check } from 'k6';
-import { LoginPage } from '../pages/LoginPage.js';
-import { InventoryPage } from '../pages/InventoryPage.js';
+// src/tests/login.spec.js
+import { options as smokeOptions } from '../../config/options.smoke.js';
+import LoginPage from '../pages/LoginPage.js';
+import { newTestPage, closeTestPage } from '../setup/context.js';
 
-export const options = {
-  scenarios: {
-    sauce_login: {
-      executor: 'ramping-vus',
-      exec: 'login_flow',
-      options: {
-        browsers: {
-            type: 'chromium',
-        }
-      },
-      startVUs: 0,
-      stages: [
-        { duration: '30s', target: 3 },
-        { duration: '1m', target: 5 },
-        { duration: '30s', target: 0 },
-      ],
-      tags: { page: 'login' },
-    },
-  },
-  thresholds: {
-    'browser_web_vitals_lcp{page:login}': ['value<2500'],
-    'browser_web_vitals_cls{page:login}': ['value<0.1'],
-  },
-};
+export const options = smokeOptions;
 
-export async function login_flow() {
-  const ctx = await browser.newContext();
-  const page = await ctx.newPage();
+const BASE_URL = __ENV.BASE_URL || 'http://localhost:8080';
+const EMAIL    = __ENV.LOGIN_EMAIL || 'you@example.com';
+const PASSWORD = __ENV.LOGIN_PASSWORD || 'yourPassword';
 
+export async function loginScenario() {
+  const { ctx, page } = await newTestPage();
   try {
-    const loginPage = new LoginPage(page);
-    const inventoryPage = new InventoryPage(page);
-
-    await loginPage.goto();
-    await loginPage.login('standard_user', 'secret_sauce');
-    await inventoryPage.waitForLoaded();
-
-    const titleText = await inventoryPage.title.textContent();
-    check(titleText, { 'đăng nhập thành công': (t) => t.includes('Products') });
+    console.log('LOGIN start at:', BASE_URL);
+    const login = new LoginPage(page, BASE_URL);
+    await login.goto();
+    await login.fillAndSubmit(EMAIL, PASSWORD);
+    await login.assertLoggedIn();
+    console.log('LOGIN done at URL:', page.url());
   } finally {
-    await page.close();
-    await ctx.close();
+    await closeTestPage(ctx, page);
   }
 }

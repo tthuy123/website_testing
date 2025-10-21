@@ -9,5 +9,5 @@ if [ -f ".env" ]; then
   export $(grep -v '^#' .env | xargs)
 fi
 
-echo "Running FRONTEND ${PROFILE} against ${BASE_URL:-https://www.saucedemo.com}"
-k6 run src/tests/home.spec.js
+echo "Running FRONTEND ${PROFILE} against ${BASE_URL}"
+k6 run src/tests/login.spec.js

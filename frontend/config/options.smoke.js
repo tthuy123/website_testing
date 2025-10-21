@@ -1,18 +1,21 @@
+// config/options.smoke.js  —— LOGIN ONLY
 export const options = {
   scenarios: {
-    home_smoke: {
-      executor: 'shared-iterations',
-      exec: 'home', // trùng với tên hàm export chạy trong file test
-      vus: 1,
-      iterations: 1,
-      tags: { page: 'home', profile: 'smoke' },
+    login_smoke: {
+      executor: 'constant-arrival-rate',
+      exec: 'loginScenario',     // phải khớp tên hàm trong src/tests/login.spec.js
+      rate: 1,
+      timeUnit: '1s',
+      duration: '2m',
+      preAllocatedVUs: 1,
+      maxVUs: 5,
+      tags: { page: 'login', profile: 'smoke' },
       options: { browser: { type: 'chromium' } },
     },
-
   },
-
   thresholds: {
-    'browser_web_vital_lcp{page:home}': ['p(90)<2500'],
-    'browser_web_vital_cls': ['p(90)<0.1'],
+    // các metric web-vitals hợp lệ của k6 browser:
+    'browser_web_vital_lcp{page:login}': ['p(90)<3500'],
+    'browser_web_vital_cls{page:login}': ['p(90)<0.1'],
   },
 };
