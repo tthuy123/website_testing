@@ -14,8 +14,8 @@ export const options = {
     },
   },
   thresholds: {
-    'browser_web_vitals_lcp{page:home}': ['value<2500'],
-    'browser_web_vitals_cls{page:home}': ['value<0.1'],
-    'browser_web_vitals_ttfb{page:home}': ['value<800'],
+    'browser_web_vitals_lcp{page:home}': ['p(95)<2500'],
+    'browser_web_vitals_cls{page:home}': ['p(95)<0.1'],
+    'browser_web_vitals_ttfb{page:home}': ['p(95)<800'],
   },
 };

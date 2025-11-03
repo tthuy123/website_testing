@@ -10,4 +10,4 @@ if [ -f ".env" ]; then
 fi
 
 echo "Running FRONTEND ${PROFILE} against ${BASE_URL}"
-k6 run src/tests/login.spec.js
+k6 run src/tests/shop.spec.js
