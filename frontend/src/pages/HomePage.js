@@ -285,4 +285,79 @@ const brandLinks = this.page.locator(`${menuSelector} a.brand-link`);
     await this.page.waitForSelector(this.closeCartButton, { state: 'visible', timeout: 5000 });
   }
 
+  async logout() {
+  console.log("DEBUG: Bắt đầu logout (brand-style)...");
+
+  const userLiSelector = `${this.headerContainer} li.dropdown.nav-item:last-of-type`;
+  const triggerSelector = `${userLiSelector} > a.nav-link[aria-haspopup="true"]`;
+  const menuSelector    = `${userLiSelector} .dropdown-menu.dropdown-menu-right`;
+  const menuLocator     = this.page.locator(menuSelector);
+
+  const trigger = this.page.locator(triggerSelector);
+  try {
+    console.log('DEBUG: Hover vào link user để mở dropdown...');
+    await trigger.waitFor({ state: 'attached', timeout: 8000 });
+    await trigger.hover({ timeout: 3000 }).catch(() => {});
+    await this.page.waitForTimeout(200);
+
+    console.log('DEBUG: Click link user (force) để đảm bảo menu mở...');
+    await trigger.click({ force: true, timeout: 5000 });
+
+    // Giữ hover thêm chút để tránh auto-hide
+    await trigger.hover({ timeout: 3000 }).catch(() => {});
+    await this.page.waitForTimeout(200);
+  } catch (e) {
+    console.error('ERROR: mở dropdown user thất bại:', String(e));
+    await this.page.screenshot({ path: 'debug_logout_open_failed.png' });
+    throw new Error('Không thể mở menu user để logout.');
+  }
+
+  try {
+    console.log(`DEBUG: Chờ menu "${menuSelector}" attached...`);
+    await this.page.waitForSelector(menuSelector, { state: 'attached', timeout: 10000 });
+    await this.page.screenshot({ path: 'debug_logout_menu_attached.png' });
+
+    await this.page.evaluate((sel) => {
+      const el = document.querySelector(sel);
+      if (el) {
+        el.classList.add('show');
+        el.style.display = 'block';
+        el.style.opacity = '1';
+        el.style.visibility = 'visible';
+        el.setAttribute('aria-hidden', 'false');
+      }
+    }, menuSelector);
+
+    console.log('DEBUG: Xác nhận menu visible...');
+    await menuLocator.waitFor({ state: 'visible', timeout: 5000 });
+    await this.page.screenshot({ path: 'debug_logout_menu_visible.png' });
+  } catch (e) {
+    console.error('ERROR: menu user không visible:', String(e));
+    await this.page.screenshot({ path: 'debug_logout_menu_visible_failed.png' });
+    throw new Error('Không thể mở hoặc nhìn thấy menu user.');
+  }
+
+  try {
+    const signOutBtn = menuLocator
+      .locator('button.dropdown-item[role="menuitem"]')
+      .filter({ hasText: /^(sign out|logout|log out)$/i });
+
+    await signOutBtn.waitFor({ state: 'visible', timeout: 5000 });
+    await signOutBtn.click({ timeout: 5000 });
+    console.log('DEBUG: Click "Sign Out" thành công.');
+  } catch (e) {
+    console.error('ERROR: Click "Sign Out" thất bại:', String(e));
+    await this.page.screenshot({ path: 'debug_logout_click_failed.png' });
+    throw new Error('Không thể mở hoặc click nút Sign Out.');
+  }
+
+  try {
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.waitForURL(/(\/login|\/)($|\?)/i, { timeout: 8000 }).catch(() => {});
+    console.log('DEBUG: URL sau logout:', this.page.url());
+  } catch (_) {
+    console.warn('WARN: Không bắt được URL sau logout, tiếp tục flow.');
+  }
+}
+
 }
