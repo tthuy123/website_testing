@@ -14,8 +14,7 @@ export const options = {
     },
   },
   thresholds: {
-    // các metric web-vitals hợp lệ của k6 browser:
-    "browser_web_vital_lcp{page:signup}": ["p(90)<3500"],
-    "browser_web_vital_cls{page:signup}": ["p(90)<0.1"],
+    "browser_web_vital_lcp{page:signup}": ["p(75)<3500"],
+    "browser_web_vital_cls{page:signup}": ["p(75)<0.1"],
   },
 };

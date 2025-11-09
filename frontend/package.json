@@ -4,5 +4,10 @@
   "type": "module",
   "description": "k6/browser POM skeleton",
   "dependencies": {},
-  "devDependencies": {}
+  "devDependencies": {},
+  "scripts": {
+    "test:flow1": "bash ./scripts/run.sh smoke src/tests/flow.signup-login-browse.spec.js",
+    "test:home": "bash ./scripts/run.sh smoke src/tests/home.spec.js",
+    "test:login": "bash ./scripts/run.sh smoke src/tests/login.spec.js"
+  }
 }
