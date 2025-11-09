@@ -1,2 +1,2 @@
 # How to run
-./scripts/run.sh smoke
+npm run test:flow1
