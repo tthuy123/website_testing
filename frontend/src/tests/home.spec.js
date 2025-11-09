@@ -1,7 +1,7 @@
 import { browser } from 'k6/browser';
 import HomePage from '../pages/HomePage.js';
-import { options as smokeOptions } from '../../config/options.smoke.js';
-export const options = smokeOptions;
+import { smokePreset } from "../../config/options.presets.js";
+export const options = smokePreset({ exec: "homeScenario", pageTag: "home" });
 
 const BASE_URL = __ENV.BASE_URL || 'http://localhost:8080';
 
