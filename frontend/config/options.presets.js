@@ -4,7 +4,6 @@ function webVitalThresholds(pageTag = "default") {
     [`browser_web_vital_lcp{page:${pageTag}}`]: ['p(75)<3500'],
     [`browser_web_vital_cls{page:${pageTag}}`]: ['p(90)<0.1'],
     // Thêm INP khi dữ liệu đã ổn định:
-    // [`browser_web_vital_inp{page:${pageTag}}`]: ['p(75)<200'],
   };
 }
 
@@ -41,7 +40,7 @@ export function multiSmokePreset({ entries, vus = 1, iterations = 1, browserType
   return { scenarios, thresholds };
 }
 
-export function averageLoadPreset({ exec, pageTag = "average-load", vus = 50, duration = "1m", browserType = "chromium" }) {
+export function averageLoadPreset({ exec, pageTag = "average-load", vus = 50, duration = "10m", browserType = "chromium" }) {
   return {
     scenarios: {
       [exec]: {
